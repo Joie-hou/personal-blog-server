@@ -4,6 +4,9 @@
 # nodejs express
 
 ```js
+//安装依赖
+npm i
+
 //运行项目
 node app.js
 
