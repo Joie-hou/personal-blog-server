@@ -13,6 +13,6 @@ node app.js
 //nodemon 可以实现热重载
 npm i -g nodemon
 
-//运行
+//运行项目
 nodemon app.js
 ```
