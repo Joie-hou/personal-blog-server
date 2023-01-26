@@ -17,6 +17,11 @@ const content = joi.string().required().messages({
     "any.required": "文章内容为必填",
     "string.empty": "文章内容必填",
 })
+
+const article_floder = joi.string().required().messages({
+    "any.required": "文件保存路径为必填",
+    "string.empty": "文件保存路径必填",
+})
 const cover_img = joi.string().required().messages({
     "any.required": "文章封面为必填",
     "string.empty": "文章封面必填",
@@ -53,7 +58,8 @@ exports.add_article_schema = {
         cate_id,
         content,
         cover_img,
-        state
+        state,
+        article_floder
     }
 }
 
@@ -65,7 +71,8 @@ exports.update_article_schema = {
         cate_id,
         content,
         cover_img,
-        state
+        state,
+        article_floder
     }
 }
 

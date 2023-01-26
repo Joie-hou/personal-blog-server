@@ -5,15 +5,18 @@ const fs = require("fs")
 const db = require("../db/index")
 
 //导入上传文件处理函数
-const { uploadFile } = require("../upload")
+const { uploadFile } = require("./upload")
 
 //上传文件
 exports.uploadFile = (req, res) => {
     uploadFile(req.file.path, "article_cover_img/" + req.file.filename).then(ress => {
-        return res.send({
-            status: 0,
-            message: "上传文件成功",
-            data: ress.url
+        fs.unlink(req.file.path, (err) => {
+            if (err) return res.cc("上传文章封面图失败！")
+            return res.send({
+                status: 0,
+                message: "上传文章封面成功！",
+                data: ress.url
+            })
         })
     }).catch(err => {
         return res.cc(err)
@@ -24,10 +27,13 @@ exports.uploadFile = (req, res) => {
 exports.uploadArticleFile = (req, res) => {
     const savePath = `article/${req.body.floder}/`
     uploadFile(req.file.path, savePath + req.file.filename).then(ress => {
-        return res.send({
-            status: 0,
-            message: "上传图片成功",
-            data: ress.url
+        fs.unlink(req.file.path, (err) => {
+            if (err) return res.cc("上传图片失败！")
+            return res.send({
+                status: 0,
+                message: "上传图片成功！",
+                data: ress.url
+            })
         })
     }).catch(err => {
         return res.cc(err)
@@ -45,31 +51,31 @@ exports.addArticle = (req, res) => {
 
     //const file = uploadFile(req.file.path, "article_cover_img/" + req.file.filename)
     //uploadFile(req.file.path, "article_cover_img/" + req.file.filename).then(ress => {
-        const articleInfo = {
-            //标题，内容，状态，分类id，封面图
-            ...req.body,
-            //封面在服务器端的存放路径
-            //cover_img: path.join("/upload", req.file.filename), //保存在服务器端
-            //cover_img: ress.url, //七牛云链接
-            //新增时间
-            pub_date: new Date(),
-            //作者id
-            author_id: req.user.id,
-        }
-        //定义新增文章的sql语句
-        const sqlStr = `insert into ev_articles set ?`
-        //执行sql语句
-        db.query(sqlStr, articleInfo, (err, results) => {
-            if (err) return res.cc(err)
+    const articleInfo = {
+        //标题，内容，状态，分类id，封面图
+        ...req.body,
+        //封面在服务器端的存放路径
+        //cover_img: path.join("/upload", req.file.filename), //保存在服务器端
+        //cover_img: ress.url, //七牛云链接
+        //新增时间
+        pub_date: new Date(),
+        //作者id
+        author_id: req.user.id,
+    }
+    //定义新增文章的sql语句
+    const sqlStr = `insert into ev_articles set ?`
+    //执行sql语句
+    db.query(sqlStr, articleInfo, (err, results) => {
+        if (err) return res.cc(err)
 
-            if (results.affectedRows !== 1) return res.cc("新增文章失败！")
+        if (results.affectedRows !== 1) return res.cc("新增文章失败！")
 
-            //fs.unlink(req.file.path, (err) => {
-            //    if (err) return res.cc("新增文章失败！")
-            //    return res.cc("新增文章成功！", 0)
-            //})
-            return res.cc("新增文章成功！", 0)
-        })
+        //fs.unlink(req.file.path, (err) => {
+        //    if (err) return res.cc("新增文章失败！")
+        //    return res.cc("新增文章成功！", 0)
+        //})
+        return res.cc("新增文章成功！", 0)
+    })
     //}).catch(err => {
     //    console.error(err);
     //    return res.cc(err)
@@ -95,7 +101,7 @@ exports.deleteArticle = (req, res) => {
 exports.listArticle = (req, res) => {
     //定义查询文章的 sql 语句
     let sqlStr = ``
-    if(req.params.id) {
+    if (req.params.id) {
         sqlStr = `select * from ev_articles where cate_id=${parseInt(req.params.id)} and is_delete=0 and state='发布' limit ?, ?`
     } else {
         sqlStr = `select * from ev_articles limit ?, ?`
@@ -108,7 +114,7 @@ exports.listArticle = (req, res) => {
 
         //定义统计文章数量的sql语句
         let sqlStr = ``
-        if(req.params.id) {
+        if (req.params.id) {
             sqlStr = `select count(id) as total from ev_articles where cate_id=${parseInt(req.params.id)} and is_delete=0 and state='发布'`
         } else {
             sqlStr = `select count(id) as total from ev_articles`
@@ -140,9 +146,9 @@ exports.articleContent = (req, res) => {
     const sqlStr = `select * from ev_articles where id = ?`
     //执行sql语句
     db.query(sqlStr, req.params.id, (err, results) => {
-        if(err) return res.cc(err)
+        if (err) return res.cc(err)
 
-        if(results.length === 0) return res.cc("暂无文章内容！")
+        if (results.length === 0) return res.cc("暂无文章内容！")
 
         return res.send({
             status: 0,
@@ -154,6 +160,7 @@ exports.articleContent = (req, res) => {
 
 //根据id更新文章详情
 exports.updateArticle = (req, res) => {
+    //console.log(req.body);
     const articleInfo = {
         //标题，内容，状态，分类id，封面图，id
         ...req.body,

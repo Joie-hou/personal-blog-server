@@ -8,7 +8,7 @@ const db = require("../db/index")
 const bcrypt = require("bcryptjs")
 
 //导入上传文件处理函数
-const { uploadFile } = require("../upload")
+const { uploadFile } = require("./upload")
 
 //获取用户信息的处理函数
 exports.getUserinfo = (req, res) => {
@@ -74,7 +74,7 @@ exports.updatePassword = (req, res) => {
 
 //更新用户头像的处理函数
 exports.updateAvatar = (req, res) => {
-    console.log(req.file);
+    //console.log(req.file);
     //手动判断是否上传了头像
     if (!req.file || req.file.fieldname !== "avatar") return res.cc("用户头像为必选参数")
     uploadFile(req.file.path, "avatar/" + req.file.filename).then(ress => {

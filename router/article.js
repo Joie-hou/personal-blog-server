@@ -5,7 +5,7 @@ const router = express.Router()
 const expressJoi = require("@escook/express-joi")
 
 //导入解析formdata格式表单数据的模块
-const { uploadMiddleWare } = require("../upload")
+const { uploadMiddleWare } = require("../router_handler/upload")
 
 const articleRouterHandler = require("../router_handler/article") //文章的处理函数
 

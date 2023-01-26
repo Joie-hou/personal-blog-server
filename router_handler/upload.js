@@ -7,7 +7,7 @@ const multer = require("multer")
 exports.uploadMiddleWare = multer({
     storage: multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, path.join(__dirname, "./upload/"))
+            cb(null, path.join(__dirname, "../upload/"))
         },
         filename: function (req, file, cb) {
             // fieldname是表单的name值，也就是我们设定的“logo”，

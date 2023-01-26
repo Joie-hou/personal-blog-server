@@ -4,7 +4,7 @@ const express = require("express")
 const expressJoi = require("@escook/express-joi")
 
 //导入解析formdata格式表单数据的模块
-const { uploadMiddleWare } = require("../upload")
+const { uploadMiddleWare } = require("../router_handler/upload")
 
 //导入路由处理函数模块
 const userinfo_handler = require("../router_handler/userinfo")
